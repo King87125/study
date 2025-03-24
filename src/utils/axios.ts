@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // 设置基础URL
-axios.defaults.baseURL = 'http://localhost:5001';
+axios.defaults.baseURL = 'https://kaoyan-buddy-api.onrender.com';
 
 // 配置请求拦截器
 axios.interceptors.request.use(
