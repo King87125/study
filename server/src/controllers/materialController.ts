@@ -54,27 +54,9 @@ export const getMaterials = async (req: Request, res: Response) => {
       limit: pageSize,
       offset: pageSize * (page - 1)
     });
-    
-    // 为每个材料添加_id字段
-    const formattedMaterials = await Promise.all(materials.map(async (material) => {
-      const materialJSON = material.toJSON() as any;
-      
-      // 查询上传者信息
-      const uploadedBy = await User.findByPk(material.uploadedById);
-      
-      return {
-        ...materialJSON,
-        _id: material.id,
-        uploadedBy: uploadedBy ? {
-          _id: uploadedBy.id,
-          username: uploadedBy.username,
-          avatar: uploadedBy.avatar || '/uploads/avatars/default.jpg'
-        } : null
-      };
-    }));
       
     res.json({
-      materials: formattedMaterials,
+      materials,
       page,
       pages: Math.ceil(count / pageSize),
       count,
@@ -93,6 +75,11 @@ export const getMaterialById = async (req: Request, res: Response) => {
     const material = await Material.findByPk(req.params.id, {
       include: [
         {
+          model: User,
+          as: 'uploadedBy',
+          attributes: ['id', 'username', 'avatar']
+        },
+        {
           model: Comment,
           as: 'comments',
           include: [
@@ -106,30 +93,7 @@ export const getMaterialById = async (req: Request, res: Response) => {
     });
       
     if (material) {
-      // 查询上传者信息
-      const uploadedBy = await User.findByPk(material.uploadedById);
-      
-      // 格式化响应，添加_id字段
-      const materialJSON = material.toJSON() as any;
-      const response = {
-        ...materialJSON,
-        _id: material.id,
-        uploadedBy: uploadedBy ? {
-          _id: uploadedBy.id,
-          username: uploadedBy.username,
-          avatar: uploadedBy.avatar || '/uploads/avatars/default.jpg'
-        } : null,
-        comments: materialJSON.comments ? materialJSON.comments.map((comment: any) => ({
-          ...comment,
-          _id: comment.id,
-          user: {
-            ...comment.User,
-            _id: comment.User.id
-          }
-        })) : []
-      };
-      
-      res.json(response);
+      res.json(material);
     } else {
       res.status(404).json({ message: '资料未找到' });
     }
@@ -155,12 +119,6 @@ export const uploadMaterial = async (req: Request, res: Response) => {
     
     const userId = (req as any).user.id;
     
-    // 查询用户信息
-    const user = await User.findByPk(userId);
-    if (!user) {
-      return res.status(404).json({ message: '用户不存在' });
-    }
-    
     const material = await Material.create({
       title,
       description,
@@ -184,19 +142,7 @@ export const uploadMaterial = async (req: Request, res: Response) => {
       ]
     });
     
-    // 添加_id字段以匹配前端期望的格式
-    const materialJSON = materialWithUser?.toJSON() as any;
-    const response = {
-      ...materialJSON,
-      _id: materialWithUser?.id,
-      uploadedBy: {
-        _id: user.id,
-        username: user.username,
-        avatar: user.avatar || '/uploads/avatars/default.jpg'
-      }
-    };
-    
-    res.status(201).json(response);
+    res.status(201).json(materialWithUser);
   } catch (error: any) {
     console.error('上传资料错误:', error);
     res.status(500).json({ message: error.message || '服务器错误' });
@@ -306,26 +252,14 @@ export const addComment = async (req: Request, res: Response) => {
       ]
     });
     
-    // 格式化评论响应
-    const commentJSON = commentWithUser?.toJSON() as any;
-    const formattedComment = {
-      ...commentJSON,
-      _id: commentJSON.id,
-      user: {
-        _id: commentJSON.User.id,
-        username: commentJSON.User.username,
-        avatar: commentJSON.User.avatar || '/uploads/avatars/default.jpg'
-      }
-    };
-    
-    res.status(201).json(formattedComment);
+    res.status(201).json({ message: '评论添加成功', comment: commentWithUser });
   } catch (error: any) {
     console.error('添加评论错误:', error);
     res.status(500).json({ message: error.message || '服务器错误' });
   }
 };
 
-// @desc    下载资料
+// @desc    下载资料（增加下载计数）
 // @route   POST /api/materials/:id/download
 // @access  Private
 export const downloadMaterial = async (req: Request, res: Response) => {
@@ -341,12 +275,7 @@ export const downloadMaterial = async (req: Request, res: Response) => {
       downloads: material.downloads + 1
     });
     
-    // 确保提供完整的文件URL，如果是相对路径的话添加主机信息
-    const fileUrl = material.fileUrl.startsWith('http') 
-      ? material.fileUrl 
-      : `${req.protocol}://${req.get('host')}${material.fileUrl}`;
-    
-    res.json({ fileUrl, message: '下载成功' });
+    res.json({ downloads: material.downloads, fileUrl: material.fileUrl });
   } catch (error: any) {
     console.error('下载资料错误:', error);
     res.status(500).json({ message: error.message || '服务器错误' });

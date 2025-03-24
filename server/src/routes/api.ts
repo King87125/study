@@ -4,15 +4,15 @@ import * as supervisionController from '../controllers/supervision.controller';
 // 假设这些是已有的控制器
 import * as userController from '../controllers/userController';
 import * as plannerController from '../controllers/plannerController';
-import { authMiddleware } from '../middleware/authMiddleware';
+import { protect as authMiddleware } from '../middleware/authMiddleware';
 
 const router = express.Router();
 
 // 用户相关路由
-router.post('/users/register', userController.register);
-router.post('/users/login', userController.login);
-router.get('/users/profile', authMiddleware, userController.getProfile);
-router.put('/users/profile', authMiddleware, userController.updateProfile);
+router.post('/users/register', userController.registerUser);
+router.post('/users/login', userController.loginUser);
+router.get('/users/profile', authMiddleware, userController.getUserProfile);
+router.put('/users/profile', authMiddleware, userController.updateUserProfile);
 
 // 任务相关路由
 router.get('/tasks', authMiddleware, plannerController.getTasks);
@@ -28,7 +28,7 @@ router.delete('/events/:id', authMiddleware, plannerController.deleteEvent);
 
 // 考试日期相关路由
 router.get('/exam-date', authMiddleware, plannerController.getExamDate);
-router.post('/exam-date', authMiddleware, plannerController.setExamDate);
+router.post('/exam-date', authMiddleware, plannerController.updateExamDate);
 router.put('/exam-date/:id', authMiddleware, plannerController.updateExamDate);
 
 // 好友相关路由
