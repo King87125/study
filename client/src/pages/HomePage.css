@@ -1,0 +1,182 @@
+.home-container {
+  padding: 0;
+}
+
+/* 欢迎横幅样式 */
+.hero-section {
+  height: 500px;
+  overflow: hidden;
+}
+
+.carousel-item {
+  height: 500px;
+  background: linear-gradient(135deg, #1890ff 0%, #722ed1 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.carousel-content {
+  padding: 20px;
+  max-width: 800px;
+}
+
+.carousel-content h1 {
+  color: white;
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.carousel-content p {
+  color: white;
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+}
+
+/* 功能模块样式 */
+.features-section {
+  padding: 60px 20px;
+  background-color: #f5f5f5;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 40px !important;
+}
+
+.feature-card {
+  height: 100%;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+}
+
+.feature-icon {
+  font-size: 3rem;
+  color: #1890ff;
+  margin-bottom: 16px;
+  display: block;
+}
+
+/* 关于我们样式 */
+.about-section {
+  padding: 60px 20px;
+  background-color: white;
+  text-align: center;
+}
+
+.about-paragraph {
+  max-width: 800px;
+  margin: 0 auto;
+  font-size: 1.1rem;
+  line-height: 1.8;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .hero-section,
+  .carousel-item {
+    height: 400px;
+  }
+
+  .carousel-content h1 {
+    font-size: 2rem;
+  }
+
+  .carousel-content p {
+    font-size: 1rem;
+  }
+
+  .features-section,
+  .about-section {
+    padding: 40px 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section,
+  .carousel-item {
+    height: 350px;
+  }
+} 
+
+.home-page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.home-hero-section {
+  padding: 80px 24px;
+  text-align: center;
+  background-color: #f0f5ff;
+  border-radius: 8px;
+  margin-bottom: 48px;
+}
+
+.home-features-section {
+  padding: 48px 0;
+}
+
+.home-feature-card {
+  height: 100%;
+  text-align: center;
+  border: 1px solid #f0f0f0 !important;
+  border-radius: 8px !important;
+}
+
+.home-feature-card .ant-card-body {
+  padding: 32px 24px;
+}
+
+.home-feature-icon {
+  font-size: 48px;
+  color: #1677ff;
+  margin-bottom: 16px;
+}
+
+.home-feature-card h4.ant-typography {
+  margin-bottom: 8px;
+}
+
+.home-feature-card .ant-typography-secondary {
+  min-height: 60px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+  .home-hero-section {
+    padding: 40px 16px;
+  }
+
+  .home-hero-section h1.ant-typography {
+    font-size: 28px;
+  }
+
+  .home-hero-section .ant-typography-paragraph {
+    font-size: 16px;
+  }
+
+  .home-hero-section .ant-space {
+    flex-direction: column;
+    gap: 16px !important;
+  }
+
+  .home-features-section {
+    padding: 32px 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .home-hero-section h1.ant-typography {
+    font-size: 24px;
+  }
+
+  .home-hero-section .ant-typography-paragraph {
+    font-size: 14px;
+  }
+}

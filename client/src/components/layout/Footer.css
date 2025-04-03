@@ -1,0 +1,73 @@
+/* .footer {
+  text-align: center;
+  background: #f0f2f5;
+  padding: 24px 0;
+  color: rgba(0, 0, 0, 0.65);
+} */
+
+.footer-pro {
+  background-color: #f0f2f5; /* 使用浅灰色背景 */
+  padding: 48px 24px; /* 增大上下内边距 */
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.footer-pro .ant-typography {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.footer-pro h4.ant-typography {
+  color: rgba(0, 0, 0, 0.88); /* 标题颜色加深 */
+  margin-bottom: 20px; /* 标题下间距 */
+}
+
+.footer-pro .ant-space-item {
+  margin-bottom: 8px; /* 链接间距 */
+}
+
+.footer-pro a.ant-typography {
+  color: rgba(0, 0, 0, 0.65);
+  transition: color 0.3s;
+}
+
+.footer-pro a.ant-typography:hover {
+  color: #1677ff; /* 主题色 */
+}
+
+.footer-pro .ant-divider {
+  background-color: #e8e8e8; /* 分割线颜色 */
+  margin: 24px 0;
+}
+
+.footer-pro .ant-space .anticon {
+  margin-right: 8px; /* 图标右间距 */
+}
+
+/* 移除旧的 iPad 样式或调整 */
+/* 
+@media only screen and (min-width: 768px) and (max-width: 1194px) {
+  .footer {
+    padding: 30px 0;
+    font-size: 16px;
+  }
+
+  .footer p {
+    margin: 0;
+    line-height: 1.6;
+  }
+}
+
+@media only screen and (min-width: 834px) and (max-width: 834px) and (min-height: 1194px) and (max-height: 1194px),
+       only screen and (min-width: 1194px) and (max-width: 1194px) and (min-height: 834px) and (max-height: 834px) {
+  .footer {
+    padding: 32px 0;
+  }
+} 
+*/
+
+/* 11英寸iPad Pro特定优化 */
+@media only screen and (min-width: 834px) and (max-width: 834px) and (min-height: 1194px) and (max-height: 1194px),
+       only screen and (min-width: 1194px) and (max-width: 1194px) and (min-height: 834px) and (max-height: 834px) {
+  .footer {
+    padding: 32px 0;
+  }
+} 

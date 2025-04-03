@@ -1,0 +1,372 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+body {
+  margin: 0;
+  /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif; */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; /* 使用 Inter 字体 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #ffffff; /* 设置全局背景为白色 */
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* 应用整体布局 */
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  padding: 24px;
+  /* background-color: #f0f2f5; */ /* 移除灰色背景 */
+  background-color: #ffffff; /* 确保内容区域也是白色 */
+}
+
+/* 通用样式 */
+.page-container {
+  padding: 24px;
+  background-color: #fff;
+  border-radius: 8px; /* 稍微增大圆角 */
+  /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); */ /* 考虑移除或调整阴影 */
+  border: 1px solid #f0f0f0; /* 使用边框替代阴影 */
+}
+
+/* 卡片样式 - 更新为列表项卡片优化 */
+.custom-card {
+  height: 100%; /* 保持高度填充 */
+  transition: all 0.3s ease-in-out; /* 平滑过渡 */
+  border: 1px solid #f0f0f0; /* 统一边框 */
+  border-radius: 8px; /* 统一圆角 */
+  overflow: hidden; /* 防止内容溢出圆角 */
+  display: flex; /* 使用 Flexbox 布局 */
+  flex-direction: column; /* 垂直排列 */
+}
+
+.custom-card .ant-card-cover {
+  /* 控制封面图片高度 */
+  height: 160px; 
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fafafa; /* 占位背景色 */
+}
+
+.custom-card .ant-card-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 保持图片比例并填充 */
+}
+
+.custom-card .ant-card-body {
+  padding: 16px; /* 调整内边距 */
+  flex-grow: 1; /* 让 body 区域填充剩余空间 */
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-card .ant-card-body .ant-card-meta-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* 标题过长时显示省略号 */
+}
+
+.custom-card .ant-card-body .ant-card-meta-description {
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 13px;
+  line-height: 1.4;
+  flex-grow: 1; /* 填充空间，将下方内容推到底部 */
+  margin-bottom: 12px; /* 与下方元数据间距 */
+}
+
+.custom-card .card-meta-footer {
+  /* 用于放置标签、作者等底部信息 */
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.45);
+  margin-top: auto; /* 推至底部 */
+}
+
+.custom-card .card-meta-footer .ant-space-item:not(:last-child) {
+  margin-right: 8px; /* 元数据间距 */
+}
+
+.custom-card:hover {
+  border-color: #1677ff; /* 悬停时边框变蓝 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* 轻微阴影 */
+  transform: translateY(-3px); /* 轻微上移 */
+}
+
+/* 表单容器 - 移除旧的 */
+/* .form-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+} */
+
+/* 新的表单卡片样式 */
+.form-card {
+  max-width: 800px; /* 限制最大宽度 */
+  margin: 32px auto; /* 上下间距 */
+  padding: 32px; /* 增加内边距 */
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  background-color: #ffffff;
+}
+
+.form-card .ant-form-item-label > label {
+  font-weight: 500; /* 标签字体加粗 */
+}
+
+/* 优化 Upload picture-card 样式 */
+.form-card .ant-upload-list-picture-card-container,
+.form-card .ant-upload-select-picture-card {
+  width: 128px; /* 增大卡片尺寸 */
+  height: 128px;
+}
+
+/* 优化 Upload Dragger 样式 */
+.form-card .ant-upload-drag {
+  background: #fafafa;
+  border: 2px dashed #d9d9d9;
+  border-radius: 8px;
+  padding: 32px 0;
+}
+
+.form-card .ant-upload-drag:hover {
+  border-color: #1677ff;
+}
+
+.form-card .ant-upload-drag-icon .anticon {
+  color: #1677ff;
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.form-card .ant-upload-text {
+  color: rgba(0, 0, 0, 0.88);
+  font-size: 16px;
+}
+
+.form-card .ant-upload-hint {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+/* 统一提交按钮 */
+.form-card .ant-form-item:last-child {
+  margin-bottom: 0; /* 移除最后一个元素的下边距 */
+}
+
+.form-card .ant-form-item .ant-btn[html-type="submit"] {
+  margin-top: 16px; /* 统一上边距 */
+}
+
+/* 按钮组 */
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 16px;
+  }
+  
+  .page-container {
+    padding: 16px;
+  }
+}
+
+/* iPad适配样式 - 注释掉，优先使用 AntD Grid 和通用断点 */
+/*
+@media only screen and (min-width: 834px) and (max-width: 834px) and (min-height: 1112px) and (max-height: 1112px),
+       only screen and (min-width: 1112px) and (max-width: 1112px) and (min-height: 834px) and (max-height: 834px) {
+  .page-container {
+    padding: 20px 40px;
+  }
+  
+  .main-content {
+    min-height: calc(100vh - 180px);
+  }
+  
+  .custom-card {
+    margin-bottom: 30px;
+    min-height: 180px;
+  }
+  
+  .auth-card {
+    width: 500px;
+  }
+  
+  .ant-menu-item {
+    height: 60px !important;
+    line-height: 60px !important;
+  }
+  
+  .ant-list-item {
+    padding: 16px 20px !important;
+  }
+  
+  .ant-btn {
+    height: 40px;
+    padding: 0 20px;
+    font-size: 16px;
+  }
+}
+
+@media only screen and (min-width: 834px) and (max-width: 834px) and (min-height: 1194px) and (max-height: 1194px),
+       only screen and (min-width: 1194px) and (max-width: 1194px) and (min-height: 834px) and (max-height: 834px) {
+  .page-container {
+    padding: 24px 45px;
+  }
+  
+  .main-content {
+    min-height: calc(100vh - 190px);
+  }
+  
+  .custom-card {
+    margin-bottom: 32px;
+    min-height: 190px;
+  }
+  
+  .auth-card {
+    width: 520px;
+  }
+  
+  .ant-menu-item {
+    height: 64px !important;
+    line-height: 64px !important;
+  }
+  
+  .ant-list-item {
+    padding: 18px 22px !important;
+  }
+  
+  .ant-btn {
+    height: 44px;
+    padding: 0 22px;
+    font-size: 16px;
+  }
+}
+
+@media only screen and (min-width: 1112px) and (max-width: 1194px) and (min-height: 834px) and (max-height: 834px) {
+  .page-container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  
+  .ant-row {
+    margin-left: -16px !important;
+    margin-right: -16px !important;
+  }
+  
+  .ant-col {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1194px) {
+  .ant-form-item {
+    margin-bottom: 24px;
+  }
+  
+  .ant-input {
+    height: 44px;
+    font-size: 16px;
+  }
+  
+  .ant-select-selector {
+    height: 44px !important;
+    padding-top: 7px !important;
+  }
+  
+  .ant-dropdown-menu-item, 
+  .ant-dropdown-menu-submenu-title {
+    padding: 12px 20px;
+    font-size: 16px;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .ant-card-actions > li {
+    padding: 16px 0;
+  }
+  
+  .ant-form-item-label > label {
+    font-size: 16px;
+    height: 32px;
+  }
+}
+*/
+
+/* 卡片底部标签样式 */
+.card-tags {
+  /* Space 容器本身的样式 (如果需要) */
+  line-height: 1; /* 避免 wrap 时行高影响对齐 */
+}
+
+.card-tags .ant-tag {
+  font-size: 11px; /* 统一字体大小 */
+  padding: 2px 6px; /* 调整内边距 */
+  margin: 2px; /* 添加外边距，wrap 时有间隔 */
+  border-radius: 4px; /* 统一圆角 */
+  /* 可以覆盖 AntD 默认颜色，使其更柔和 */
+  /* 例如：移除默认蓝色 Tag 的边框，使用更柔和的背景 */
+  /* &.ant-tag-blue {
+    color: #1668dc;
+    background: #e6f4ff;
+    border-color: #91caff;
+  } */
+}
+
+/* Menstruation Tracker Calendar Cell Styles */
+.date-cell-custom .ant-picker-cell-inner {
+  border-radius: 50% !important; /* 强制圆形 */
+  transition: background-color 0.3s, border 0.3s, outline 0.3s;
+}
+
+/* Actual Period: 淡粉背景 */
+.actual-period-cell .ant-picker-cell-inner {
+  background-color: #fff1f0 !important;
+}
+
+/* Predicted Period: 淡黄背景 */
+.predicted-period-cell .ant-picker-cell-inner {
+  background-color: #fffbe6 !important;
+}
+
+/* Ovulation Day: 绿色轮廓 */
+.ovulation-cell .ant-picker-cell-inner {
+  outline: 2px solid #b7eb8f !important;
+  outline-offset: -1px !important;
+}
+
+/* Today: 蓝色边框 */
+.today-cell .ant-picker-cell-inner {
+  border: 2px solid #91d5ff !important;
+}
+
+/* Ensure today's border overrides other borders but keeps background */
+.today-cell.actual-period-cell .ant-picker-cell-inner,
+.today-cell.predicted-period-cell .ant-picker-cell-inner {
+  background-color: inherit !important; /* 继承父级的背景色 */
+}
+
+/* Ensure ovulation outline is visible on top of background colors */

@@ -1,0 +1,71 @@
+.video-player-wrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  background-color: #000; /* Black background while loading */
+  border-radius: 8px; /* Match card radius */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.video-player {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none; /* Remove default border */
+}
+
+.video-info-wrapper .ant-descriptions-item-label {
+  color: rgba(0, 0, 0, 0.65); /* 标签颜色调整 */
+}
+
+.video-info-wrapper .ant-divider {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+/* 响应式调整 */
+@media (max-width: 991px) { 
+  .video-player-wrapper {
+    margin-bottom: 24px; 
+  }
+
+  /* 如果左右 Col 在小屏幕上间距不够，可以添加 */
+  /* .video-detail-page .ant-col {
+     margin-bottom: 24px;
+  } */
+} 
+
+.video-player-card {
+  margin-bottom: 24px;
+  overflow: hidden; /* 确保视频不会溢出 Card */
+}
+
+/* 新增：视频宽高比容器 */
+.video-aspect-ratio-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 Aspect Ratio (9 / 16 * 100) */
+  background-color: #f0f0f0; /* 添加背景色作为占位符 */
+}
+
+.video-aspect-ratio-wrapper video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px; /* 将圆角应用到视频本身或 wrapper */
+}
+
+.video-info-card {
+  margin-bottom: 24px;
+}
+
+.comment-section {
+  margin-top: 32px;
+}
+
+/* 可以在这里添加更多针对视频详情页面的样式 */ 

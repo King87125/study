@@ -1,0 +1,115 @@
+/* iPad触摸体验优化 - 针对10.5英寸和11英寸iPad */
+
+/* 改善触摸区域大小 */
+@media only screen and (min-width: 768px) and (max-width: 1194px) {
+  /* 所有按钮增大触摸区域 */
+  .ant-btn {
+    min-height: 40px;
+    min-width: 80px;
+  }
+  
+  /* 所有输入框增大高度 */
+  .ant-input, 
+  .ant-input-affix-wrapper {
+    min-height: 40px;
+  }
+  
+  /* 下拉菜单项增大 */
+  .ant-dropdown-menu-item,
+  .ant-select-item {
+    min-height: 40px;
+    line-height: 40px;
+    padding: 0 16px;
+  }
+  
+  /* 表单项标签更大 */
+  .ant-form-item-label > label {
+    font-size: 16px;
+  }
+  
+  /* 卡片间距增大 */
+  .ant-card {
+    margin-bottom: 20px;
+  }
+  
+  /* 标签页触摸区域增大 */
+  .ant-tabs-tab {
+    padding: 12px 20px;
+  }
+  
+  /* 模态框按钮增大 */
+  .ant-modal-footer .ant-btn {
+    padding: 8px 16px;
+    height: 44px;
+  }
+  
+  /* 优化滚动体验 */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+  
+  /* 禁用悬停效果，改为活跃状态效果 */
+  .ant-btn:hover,
+  .ant-btn:focus {
+    transform: none;
+  }
+  
+  .ant-btn:active {
+    transform: translateY(1px);
+  }
+  
+  /* 调整日期选择器大小 */
+  .ant-picker {
+    min-height: 40px;
+  }
+  
+  .ant-picker-cell {
+    padding: 6px 0;
+  }
+  
+  /* 调整复选框和单选框大小 */
+  .ant-checkbox-wrapper, 
+  .ant-radio-wrapper {
+    font-size: 16px;
+  }
+  
+  .ant-checkbox-inner, 
+  .ant-radio-inner {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* 11英寸iPad Pro的特定调整 */
+@media only screen and (min-width: 834px) and (max-width: 834px) and (min-height: 1194px) and (max-height: 1194px),
+       only screen and (min-width: 1194px) and (max-width: 1194px) and (min-height: 834px) and (max-height: 834px) {
+  .ant-btn {
+    min-height: 44px;
+  }
+  
+  .ant-input, 
+  .ant-input-affix-wrapper {
+    min-height: 44px;
+  }
+  
+  .ant-dropdown-menu-item,
+  .ant-select-item {
+    min-height: 44px;
+    line-height: 44px;
+  }
+  
+  .ant-tabs-tab {
+    padding: 14px 24px;
+  }
+  
+  .ant-modal-footer .ant-btn {
+    padding: 10px 20px;
+    height: 48px;
+  }
+} 

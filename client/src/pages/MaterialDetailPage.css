@@ -1,0 +1,62 @@
+/* Styles specific to MaterialDetailPage */
+
+/* .material-detail-page {
+  /* Add specific styles if needed */
+/* } */
+
+.material-info-header {
+  align-items: center; /* Vertically align items in the header */
+  margin-bottom: 24px;
+}
+
+.material-thumbnail {
+  width: 100%;
+  padding-top: 100%; /* Creates a square aspect ratio */
+  position: relative;
+  background-color: #fafafa;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.material-thumbnail img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.material-thumbnail .anticon {
+  font-size: 48px;
+  color: #bfbfbf;
+}
+
+.material-detail-page .ant-descriptions {
+  margin-top: 24px;
+}
+
+.comment-section {
+  margin-top: 32px;
+}
+
+/* 响应式调整 */
+@media (max-width: 767px) { /* Use sm breakpoint */
+  .material-info-header {
+    margin-bottom: 16px; /* 减小标题块间距 */
+  }
+  
+  .material-thumbnail {
+    margin-bottom: 16px; /* 缩略图下方间距 */
+    width: 80px; /* 减小缩略图尺寸 */
+    padding-top: 80%;
+  }
+
+  .material-detail-page .ant-descriptions {
+    margin-top: 16px;
+  }
+} 

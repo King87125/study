@@ -1,0 +1,91 @@
+/* DailyStudyPlan Component Styles */
+
+/* Calendar Cell Customization */
+.calendar-cell-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  position: relative;
+  padding-top: 4px; /* Give space for badge */
+}
+
+.calendar-cell-content .ant-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+}
+
+.calendar-cell-content .completion-hint {
+  font-size: 10px;
+  color: rgba(0, 0, 0, 0.45);
+  margin-top: 2px;
+}
+
+.calendar-cell-content .completion-icon {
+  color: #52c41a;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* Daily Plan List Item Styles */
+.daily-plan-item {
+  padding: 16px 0; /* Adjust padding */
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.3s;
+}
+
+.daily-plan-item:last-child {
+  border-bottom: none;
+}
+
+.daily-plan-item.completed {
+  background-color: #f6ffed; /* Light green background */
+  opacity: 0.7; /* Slightly faded */
+}
+
+.daily-plan-item.completed .ant-list-item-meta-title span {
+  color: rgba(0, 0, 0, 0.45); /* Grey out title */
+}
+
+.daily-plan-item .ant-list-item-meta {
+  margin-bottom: 8px;
+}
+
+.daily-plan-item .ant-list-item-meta-avatar .anticon {
+  font-size: 18px; /* Adjust icon size */
+  color: #1677ff; /* Use theme color */
+}
+
+.daily-plan-item .ant-list-item-meta-title {
+  margin-bottom: 4px;
+  font-size: 16px;
+}
+
+.daily-plan-item .ant-list-item-meta-description {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.daily-plan-item .ant-list-item-action {
+  margin-left: 16px;
+}
+
+.daily-plan-item .ant-list-item-action > li {
+  padding: 0 8px; /* Adjust action button spacing */
+}
+
+.daily-plan-item .ant-list-item-action .ant-btn-text {
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 13px;
+}
+
+.daily-plan-item .ant-list-item-action .ant-btn-text:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+  color: #1677ff;
+}
+
+.daily-plan-item .ant-list-item-action .ant-btn-text[danger]:hover {
+  color: #ff4d4f;
+} 

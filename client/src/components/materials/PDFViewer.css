@@ -1,0 +1,128 @@
+.pdf-viewer-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #f0f2f5;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background-color: #fff;
+  border-bottom: 1px solid #e8e8e8;
+  z-index: 10;
+}
+
+.document-container {
+  position: relative;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e6e6e6;
+  padding: 20px;
+  overflow: auto;
+  min-height: 70vh;
+}
+
+.annotation-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: all;
+  z-index: 2;
+}
+
+.pdf-page {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  background-color: white;
+}
+
+.loading, .error {
+  padding: 20px;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.error {
+  color: #ff4d4f;
+}
+
+.scale-display, .page-display {
+  display: inline-block;
+  padding: 0 8px;
+  min-width: 60px;
+  text-align: center;
+}
+
+.pdf-status-bar {
+  padding: 5px 16px;
+  background-color: #fafafa;
+  border-top: 1px solid #e8e8e8;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.unsaved-indicator {
+  color: #fa8c16;
+  font-size: 12px;
+}
+
+/* iPad 特定优化 */
+@media only screen and (min-width: 768px) and (max-width: 1194px) {
+  .toolbar {
+    padding: 15px 20px;
+  }
+  
+  .toolbar .ant-btn {
+    height: 44px;
+    width: 44px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .toolbar .anticon {
+    font-size: 20px;
+  }
+  
+  .scale-display, .page-display {
+    font-size: 16px;
+    padding: 0 12px;
+  }
+  
+  /* 针对Apple Pencil的特殊样式 */
+  .annotation-canvas {
+    /* 提高绘图性能 */
+    touch-action: none;
+  }
+  
+  /* 改善工具的触摸区域 */
+  .toolbar .ant-space {
+    gap: 12px !important;
+  }
+}
+
+/* 11英寸iPad Pro特定样式 */
+@media only screen and (min-width: 834px) and (max-width: 834px) and (min-height: 1194px) and (max-height: 1194px),
+       only screen and (min-width: 1194px) and (max-width: 1194px) and (min-height: 834px) and (max-height: 834px) {
+  .toolbar .ant-btn {
+    height: 48px;
+    width: 48px;
+  }
+  
+  .toolbar .anticon {
+    font-size: 22px;
+  }
+  
+  /* 更大的绘图区域 */
+  .document-container {
+    padding: 30px;
+  }
+} 
