@@ -4,12 +4,26 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// 创建SQLite数据库连接
-export const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: path.join(__dirname, '../../database.sqlite'),
-  logging: process.env.NODE_ENV === 'development' ? console.log : false,
-});
+// 使用 DATABASE_URL 环境变量连接 PostgreSQL，如果不存在则回退到 SQLite (用于本地开发)
+const databaseUrl = process.env.DATABASE_URL;
+
+export const sequelize = databaseUrl 
+  ? new Sequelize(databaseUrl, {
+      dialect: 'postgres', // 指定数据库类型为 PostgreSQL
+      protocol: 'postgres',
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false // Supabase 可能需要这个配置
+        }
+      },
+      logging: process.env.NODE_ENV === 'development' ? console.log : false, // 在开发环境打印日志
+    })
+  : new Sequelize({ // 本地 SQLite 配置 (回退)
+      dialect: 'sqlite',
+      storage: path.join(__dirname, '../../database.sqlite'), // 保持本地 SQLite 路径
+      logging: process.env.NODE_ENV === 'development' ? console.log : false,
+    });
 
 // 同步数据库，导入所有模型后调用此函数
 export const syncDatabase = async () => {
