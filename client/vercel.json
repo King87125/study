@@ -30,5 +30,8 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ]
+  ],
+  "env": {
+    "CI": "false"
+  }
 } 
