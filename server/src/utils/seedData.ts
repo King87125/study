@@ -116,9 +116,9 @@ const createAdminUser = async () => {
     // 创建管理员用户，使用特定用户名避免冲突
     const adminUsername = 'admin_user_040522'; 
     try {
-      await db.run(`
+    await db.run(`
         INSERT INTO users (username, email, password, is_admin, createdAt, updatedAt)
-        VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `, [adminUsername, adminEmail, hashedPassword, 1]);
       console.log(`管理员账号 ${adminEmail} 创建成功`);
     } catch (insertError: any) {

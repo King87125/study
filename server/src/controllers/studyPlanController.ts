@@ -373,7 +373,7 @@ export const deleteStudyPlanAsAdmin = async (req: Request, res: Response) => {
     console.error('删除学习计划失败:', error);
     res.status(500).json({ message: '删除学习计划失败' });
   }
-};
+}; 
 
 // 获取所有学习计划 (管理员)
 export const getAllStudyPlans = async (req: Request, res: Response) => {
