@@ -135,17 +135,26 @@ export const getVideoById = async (req: Request, res: Response) => {
 // @access  Private
 export const uploadVideo = async (req: Request, res: Response) => {
   try {
+    // videoUrl 现在应该是由 Cloudinary 中间件填充的 Cloudinary URL
     const { title, description, videoUrl, thumbnailUrl, category, subject, difficulty, duration } = req.body;
     
-    console.log('上传视频请求体:', req.body);
+    console.log('上传视频请求体 (控制器):', req.body);
     
-    if (!videoUrl) {
-      return res.status(400).json({ message: '请提供视频URL' });
+    // 确保 Cloudinary URL 已被中间件添加
+    if (!videoUrl || !videoUrl.includes('res.cloudinary.com')) {
+       // 检查 req.file.path 是否有 Cloudinary URL (作为备用)
+      const cloudinaryUrlFromFile = (req.file as any)?.path;
+      if (!cloudinaryUrlFromFile || !cloudinaryUrlFromFile.includes('res.cloudinary.com')) {
+          console.error('错误: Cloudinary URL 未在 req.body.videoUrl 或 req.file.path 中找到。');
+          return res.status(400).json({ message: '视频文件上传失败或未找到 Cloudinary URL' });
+      }
+      // 如果在 req.file.path 找到了，也用它
+      req.body.videoUrl = cloudinaryUrlFromFile; 
     }
     
     const userId = (req as any).user.id;
     
-    // 查询用户信息
+    // 查询用户信息 (可选，如果需要)
     const user = await User.findByPk(userId);
     if (!user) {
       return res.status(404).json({ message: '用户不存在' });
@@ -154,12 +163,12 @@ export const uploadVideo = async (req: Request, res: Response) => {
     const video = await Video.create({
       title,
       description,
-      videoUrl,
-      thumbnailUrl: thumbnailUrl || '/uploads/thumbnails/default-thumbnail.jpg',
+      videoUrl: req.body.videoUrl, // 使用 Cloudinary URL
+      thumbnailUrl: thumbnailUrl || '/uploads/thumbnails/default-thumbnail.jpg', // 暂时保留默认或外部 URL 逻辑
       category,
       subject,
       difficulty,
-      duration: duration || 0,
+      duration: duration || 0, // 前端应该计算并传递时长
       uploadedById: userId,
       views: 0
     });
@@ -174,13 +183,14 @@ export const uploadVideo = async (req: Request, res: Response) => {
       ]
     });
     
-    // 转换为JSON格式
+    // 转换为JSON格式 (确保 videoWithUser 不是 null)
     const videoJSON = videoWithUser?.toJSON() as any;
     
     // 添加_id字段以匹配前端期望的格式
     const response = {
-      ...videoJSON,
+      ...(videoJSON || {}), // 处理 videoWithUser 可能为 null 的情况
       _id: video.id,
+      // 确保 uploadedBy 即使在 videoWithUser 为 null 时也能从 user 对象获取
       uploadedBy: {
         _id: user.id,
         username: user.username,

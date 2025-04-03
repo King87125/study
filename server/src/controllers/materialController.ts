@@ -108,13 +108,22 @@ export const getMaterialById = async (req: Request, res: Response) => {
 // @access  Private
 export const uploadMaterial = async (req: Request, res: Response) => {
   try {
+    // fileUrl 现在应该是由 Cloudinary 中间件填充的 Cloudinary URL
     const { title, description, fileUrl, thumbnailUrl, category, subject, fileType, fileSize } = req.body;
     
-    console.log('上传资料请求体:', req.body);
-    console.log('上传资料文件:', req.file);
+    console.log('上传资料请求体 (控制器):', req.body);
+    // console.log('上传资料文件 (控制器):', req.file); // req.file 在这里可能包含 Cloudinary URL 或原始信息
     
-    if (!fileUrl) {
-      return res.status(400).json({ message: '请提供文件URL' });
+    // 确保 Cloudinary URL 已被中间件添加
+    if (!fileUrl || !fileUrl.includes('res.cloudinary.com')) {
+      // 检查 req.file.path 是否有 Cloudinary URL (作为备用)
+      const cloudinaryUrlFromFile = (req.file as any)?.path;
+      if (!cloudinaryUrlFromFile || !cloudinaryUrlFromFile.includes('res.cloudinary.com')) {
+          console.error('错误: Cloudinary URL 未在 req.body.fileUrl 或 req.file.path 中找到。');
+          return res.status(400).json({ message: '文件上传失败或未找到 Cloudinary URL' });
+      }
+      // 如果在 req.file.path 找到了，也用它 (虽然中间件应该已经加到 req.body.fileUrl 了)
+      req.body.fileUrl = cloudinaryUrlFromFile; 
     }
     
     const userId = (req as any).user.id;
@@ -122,12 +131,12 @@ export const uploadMaterial = async (req: Request, res: Response) => {
     const material = await Material.create({
       title,
       description,
-      fileUrl,
-      thumbnailUrl: thumbnailUrl || '/uploads/thumbnails/default-material.jpg',
+      fileUrl: req.body.fileUrl, // 使用 Cloudinary URL
+      thumbnailUrl: thumbnailUrl || '/uploads/thumbnails/default-material.jpg', // 暂时保留默认缩略图逻辑
       category,
       subject,
-      fileType,
-      fileSize,
+      fileType: fileType || (req.file ? req.file.mimetype : 'unknown'), // 从 body 或 file 获取
+      fileSize: fileSize || (req.file ? req.file.size : 0),       // 从 body 或 file 获取
       uploadedById: userId,
       downloads: 0
     });
