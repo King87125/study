@@ -9,6 +9,7 @@ import {
   uploadAvatar
 } from '../controllers/userController';
 import { protect } from '../middleware/authMiddleware';
+import { searchUsers } from '../controllers/friendship.controller';
 
 const router = express.Router();
 
@@ -48,5 +49,8 @@ router.route('/profile')
   .put(protect, updateUserProfile);
 
 router.post('/avatar', protect, upload.single('avatar'), uploadAvatar);
+
+// 添加搜索用户路由
+router.get('/search', protect, searchUsers);
 
 export default router; 

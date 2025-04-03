@@ -14,7 +14,7 @@ axios.interceptors.request.use(
         if (userInfo && userInfo.token) {
           // 确保headers对象存在
           if (!config.headers) {
-            config.headers = {};
+            config.headers = new axios.AxiosHeaders();
           }
           config.headers.Authorization = `Bearer ${userInfo.token}`;
         }

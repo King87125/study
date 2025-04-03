@@ -1,4 +1,5 @@
-import { Request, Response } from 'express';
+import { DataTypes, Model, Optional } from 'sequelize';
+import { sequelize } from '../config/db';
 
 // 好友关系状态
 export enum FriendshipStatus {
@@ -9,7 +10,7 @@ export enum FriendshipStatus {
 }
 
 // 好友关系属性接口
-export interface FriendshipAttributes {
+interface FriendshipAttributes {
   id: number;
   requesterId: number;   // 请求者ID
   recipientId: number;   // 接收者ID
@@ -18,113 +19,75 @@ export interface FriendshipAttributes {
   updatedAt: Date;
 }
 
-export interface FriendshipCreationAttributes {
-  requesterId: number;
-  recipientId: number;
-  status?: FriendshipStatus;
+// 创建时可选的属性
+interface FriendshipCreationAttributes extends Optional<FriendshipAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+
+// 定义Friendship模型
+class Friendship extends Model<FriendshipAttributes, FriendshipCreationAttributes> implements FriendshipAttributes {
+  public id!: number;
+  public requesterId!: number;
+  public recipientId!: number;
+  public status!: FriendshipStatus;
+  
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
 }
 
-// 模拟对象
-const friendships: FriendshipAttributes[] = [];
-let nextId = 1;
-
-const Friendship = {
-  findAll: async (options?: any) => {
-    // 模拟查询条件
-    if (options && options.where) {
-      return friendships.filter(f => {
-        // 匹配所有提供的查询条件
-        for (const key in options.where) {
-          if (f[key as keyof FriendshipAttributes] !== options.where[key]) {
-            return false;
-          }
-        }
-        return true;
-      });
-    }
-    return friendships;
+// 初始化模型
+Friendship.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    requesterId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Users',
+        key: 'id',
+      },
+    },
+    recipientId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Users',
+        key: 'id',
+      },
+    },
+    status: {
+      type: DataTypes.ENUM('pending', 'accepted', 'rejected', 'blocked'),
+      allowNull: false,
+      defaultValue: FriendshipStatus.PENDING,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
   },
-  
-  findOne: async (options?: any) => {
-    if (options && options.where) {
-      const friendship = friendships.find(f => {
-        for (const key in options.where) {
-          if (f[key as keyof FriendshipAttributes] !== options.where[key]) {
-            return false;
-          }
-        }
-        return true;
-      });
-      
-      return friendship || null;
-    }
-    return friendships[0] || null;
-  },
-  
-  create: async (data: FriendshipCreationAttributes) => {
-    const friendship: FriendshipAttributes = {
-      id: nextId++,
-      requesterId: data.requesterId,
-      recipientId: data.recipientId,
-      status: data.status || FriendshipStatus.PENDING,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-    
-    friendships.push(friendship);
-    return friendship;
-  },
-  
-  update: async (values: Partial<FriendshipAttributes>, options: any) => {
-    let updated = 0;
-    
-    if (options && options.where) {
-      friendships.forEach((f, index) => {
-        let match = true;
-        for (const key in options.where) {
-          if (f[key as keyof FriendshipAttributes] !== options.where[key]) {
-            match = false;
-            break;
-          }
-        }
-        
-        if (match) {
-          updated++;
-          friendships[index] = { ...f, ...values, updatedAt: new Date() };
-        }
-      });
-    }
-    
-    return [updated];
-  },
-  
-  destroy: async (options: any) => {
-    let deleted = 0;
-    
-    if (options && options.where) {
-      const newFriendships = friendships.filter(f => {
-        let match = true;
-        for (const key in options.where) {
-          if (f[key as keyof FriendshipAttributes] !== options.where[key]) {
-            match = false;
-            break;
-          }
-        }
-        
-        if (match) {
-          deleted++;
-          return false;
-        }
-        return true;
-      });
-      
-      // 更新数组
-      friendships.length = 0;
-      friendships.push(...newFriendships);
-    }
-    
-    return deleted;
+  {
+    sequelize,
+    modelName: 'Friendship',
+    tableName: 'friendships',
+    timestamps: true,
+    // 关闭外键约束，避免启动时报错
+    indexes: [
+      {
+        fields: ['requesterId']
+      },
+      {
+        fields: ['recipientId']
+      }
+    ]
   }
-};
+);
 
 export default Friendship; 

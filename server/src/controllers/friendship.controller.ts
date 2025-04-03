@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import Friendship, { FriendshipStatus } from '../models/Friendship';
+import { Op } from 'sequelize';  // 添加Op导入
+import User from '../models/User';  // 导入User模型
 // 这里不再导入User模型，使用模拟数据
 
 // 获取用户的所有好友(已接受)
@@ -23,21 +25,36 @@ export const getFriends = async (req: Request, res: Response) => {
       }
     });
     
-    // 合并并格式化结果
-    const friends = [
-      ...asRequester.map(friendship => ({
-        id: friendship.recipientId,
-        username: `用户${friendship.recipientId}`, // 模拟用户名
-        status: 'friend',
-        since: friendship.updatedAt
-      })),
-      ...asRecipient.map(friendship => ({
-        id: friendship.requesterId,
-        username: `用户${friendship.requesterId}`, // 模拟用户名
-        status: 'friend',
-        since: friendship.updatedAt
-      }))
+    // 获取所有朋友的ID
+    const friendIds = [
+      ...asRequester.map(f => f.recipientId),
+      ...asRecipient.map(f => f.requesterId)
     ];
+    
+    // 查询所有朋友的用户信息
+    const friendUsers = await User.findAll({
+      where: { 
+        id: { [Op.in]: friendIds } 
+      },
+      attributes: ['id', 'username', 'email', 'avatar']
+    });
+    
+    // 合并好友关系和用户信息
+    const friends = friendUsers.map(user => {
+      // 查找对应的好友关系记录
+      const friendship = 
+        asRequester.find(f => f.recipientId === user.id) || 
+        asRecipient.find(f => f.requesterId === user.id);
+      
+      return {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+        status: 'friend',
+        since: friendship ? friendship.updatedAt : new Date()
+      };
+    });
     
     res.json(friends);
   } catch (error) {
@@ -50,6 +67,7 @@ export const getFriends = async (req: Request, res: Response) => {
 export const getFriendRequests = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.id;
+    console.log('获取好友请求，用户ID:', userId);
     
     // 查询发送给当前用户的待处理好友请求
     const pendingRequests = await Friendship.findAll({
@@ -59,18 +77,48 @@ export const getFriendRequests = async (req: Request, res: Response) => {
       }
     });
     
-    // 格式化结果
-    const requests = pendingRequests.map(request => ({
-      id: request.id,
-      requesterId: request.requesterId,
-      requesterName: `用户${request.requesterId}`, // 模拟用户名
-      createdAt: request.createdAt
-    }));
+    console.log('待处理好友请求数量:', pendingRequests.length);
     
-    res.json(requests);
+    if (pendingRequests.length === 0) {
+      console.log('用户没有待处理的好友请求');
+      return res.json([]);
+    }
+    
+    console.log('待处理好友请求:', JSON.stringify(pendingRequests, null, 2));
+    
+    // 获取所有请求者的ID
+    const requesterIds = pendingRequests.map(r => r.requesterId);
+    console.log('请求者ID列表:', requesterIds);
+    
+    // 查询所有请求者的用户信息
+    const requesterUsers = await User.findAll({
+      where: { 
+        id: { [Op.in]: requesterIds } 
+      },
+      attributes: ['id', 'username', 'email', 'avatar']
+    });
+    
+    console.log('请求者用户信息:', JSON.stringify(requesterUsers, null, 2));
+    
+    // 合并请求和用户信息
+    const requests = pendingRequests.map(request => {
+      const requester = requesterUsers.find(u => u.id === request.requesterId);
+      
+      return {
+        id: request.id,
+        requesterId: request.requesterId,
+        requesterName: requester ? requester.username : `用户${request.requesterId}`,
+        requesterAvatar: requester ? requester.avatar : null,
+        createdAt: request.createdAt
+      };
+    });
+    
+    console.log('返回的好友请求数据格式:', JSON.stringify(requests, null, 2));
+    
+    return res.json(requests);
   } catch (error) {
     console.error('获取好友请求错误:', error);
-    res.status(500).json({ message: '服务器错误' });
+    return res.status(500).json({ message: '服务器错误' });
   }
 };
 
@@ -80,23 +128,39 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
     const userId = (req as any).user.id;
     const { recipientId } = req.body;
     
+    console.log('发送好友请求：', {
+      发送者ID: userId,
+      接收者ID: recipientId,
+      接收者ID类型: typeof recipientId
+    });
+    
     if (!recipientId) {
       return res.status(400).json({ message: '请提供接收者ID' });
     }
     
-    if (userId === recipientId) {
+    // 确保recipientId是数字
+    const numericRecipientId = Number(recipientId);
+    console.log('转换后的接收者ID:', numericRecipientId);
+    
+    if (isNaN(numericRecipientId)) {
+      return res.status(400).json({ message: '接收者ID必须是数字' });
+    }
+    
+    if (userId === numericRecipientId) {
       return res.status(400).json({ message: '不能添加自己为好友' });
     }
     
     // 检查是否已经存在好友关系
     const existingFriendship = await Friendship.findOne({
       where: {
-        $or: [
-          { requesterId: userId, recipientId },
-          { requesterId: recipientId, recipientId: userId }
+        [Op.or]: [
+          { requesterId: userId, recipientId: numericRecipientId },
+          { requesterId: numericRecipientId, recipientId: userId }
         ]
       }
     });
+    
+    console.log('已存在的好友关系:', existingFriendship);
     
     if (existingFriendship) {
       if (existingFriendship.status === FriendshipStatus.ACCEPTED) {
@@ -115,9 +179,11 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
     // 创建新的好友请求
     const friendship = await Friendship.create({
       requesterId: userId,
-      recipientId,
+      recipientId: numericRecipientId,
       status: FriendshipStatus.PENDING
     });
+    
+    console.log('创建的好友请求:', JSON.stringify(friendship, null, 2));
     
     res.status(201).json({
       message: '好友请求已发送',
@@ -202,7 +268,7 @@ export const removeFriend = async (req: Request, res: Response) => {
     // 删除好友关系
     await Friendship.destroy({
       where: {
-        $or: [
+        [Op.or]: [  // 修正语法，使用[Op.or]替代$or
           { requesterId: userId, recipientId: friendId, status: FriendshipStatus.ACCEPTED },
           { requesterId: friendId, recipientId: userId, status: FriendshipStatus.ACCEPTED }
         ]
@@ -219,26 +285,33 @@ export const removeFriend = async (req: Request, res: Response) => {
 // 搜索用户
 export const searchUsers = async (req: Request, res: Response) => {
   try {
-    const { query } = req.query;
+    const query = req.query.query as string;
     const userId = (req as any).user.id;
     
     if (!query || typeof query !== 'string') {
       return res.status(400).json({ message: '请提供搜索关键词' });
     }
     
-    // 模拟搜索结果
-    const users = [
-      { id: 1, username: '张三', email: 'zhang@example.com' },
-      { id: 2, username: '李四', email: 'li@example.com' },
-      { id: 3, username: '王五', email: 'wang@example.com' }
-    ].filter(user => 
-      user.id !== userId && 
-      (user.username.includes(query) || user.email.includes(query))
-    );
+    console.log('搜索用户，关键词:', query, '当前用户ID:', userId);
+    
+    // 从数据库中查询用户
+    const users = await User.findAll({
+      where: {
+        id: { [Op.ne]: userId },  // 不包括当前用户
+        [Op.or]: [
+          { username: { [Op.like]: `%${query}%` } },
+          { email: { [Op.like]: `%${query}%` } }
+        ]
+      },
+      attributes: ['id', 'username', 'email', 'avatar'],  // 只返回这些字段
+      limit: 10  // 限制结果数量
+    });
+    
+    console.log('搜索结果:', users);
     
     res.json(users);
   } catch (error) {
     console.error('搜索用户错误:', error);
-    res.status(500).json({ message: '服务器错误' });
+    res.status(500).json({ message: '搜索用户失败' });
   }
 }; 

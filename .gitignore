@@ -1,12 +1,30 @@
-# 依赖目录
-node_modules/
-*/node_modules/
+# System files
+.DS_Store
+*.log
 
-# 构建输出
-/build
-/dist
-*/build
-*/dist
+# Node modules
+node_modules/
+
+# Build directories
+dist/
+build/
+
+# Environment variables
+.env*
+!.env.example
+
+# SQLite database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Uploads directory (if applicable and contains large files)
+/server/uploads/
+/client/public/uploads/
+
+# IDE / Editor specific
+.vscode/
+.idea/
 
 # 环境变量文件
 .env
@@ -27,12 +45,9 @@ yarn-error.log*
 *.log
 
 # 操作系统文件
-.DS_Store
 Thumbs.db
 
 # IDE 和编辑器文件
-.idea/
-.vscode/
 *.swp
 *.swo
 *.sublime-workspace

@@ -1,0 +1,14 @@
+-- 创建学习计划表
+CREATE TABLE IF NOT EXISTS study_plans (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  date TEXT NOT NULL,
+  type TEXT CHECK(type IN ('video', 'material')) NOT NULL,
+  resource_id INTEGER NOT NULL,
+  priority INTEGER DEFAULT 2,
+  notes TEXT,
+  completed BOOLEAN DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+); 

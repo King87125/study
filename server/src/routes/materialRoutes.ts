@@ -8,6 +8,12 @@ import {
   addComment,
   downloadMaterial
 } from '../controllers/materialController';
+import {
+  getAnnotations,
+  createAnnotation,
+  updateAnnotation,
+  deleteAnnotation
+} from '../controllers/annotationController';
 import { protect } from '../middleware/authMiddleware';
 import { uploadMaterial as uploadMaterialMiddleware } from '../utils/fileUpload';
 
@@ -83,6 +89,27 @@ router.post('/:id/comment', protect, (req: Request, res: Response): void => {
 // 下载资料 - 需要登录
 router.post('/:id/download', protect, (req: Request, res: Response): void => {
   downloadMaterial(req, res);
+});
+
+// 添加标注相关路由
+// 获取资料的所有标注 - 需要登录
+router.get('/:materialId/annotations', protect, (req: Request, res: Response): void => {
+  getAnnotations(req, res);
+});
+
+// 创建新标注 - 需要登录
+router.post('/:materialId/annotations', protect, (req: Request, res: Response): void => {
+  createAnnotation(req, res);
+});
+
+// 更新标注 - 需要登录
+router.put('/:materialId/annotations/:annotationId', protect, (req: Request, res: Response): void => {
+  updateAnnotation(req, res);
+});
+
+// 删除标注 - 需要登录
+router.delete('/:materialId/annotations/:annotationId', protect, (req: Request, res: Response): void => {
+  deleteAnnotation(req, res);
 });
 
 export default router; 
