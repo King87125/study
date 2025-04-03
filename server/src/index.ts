@@ -8,7 +8,7 @@ import videoRoutes from './routes/videoRoutes';
 import materialRoutes from './routes/materialRoutes';
 import plannerRoutes from './routes/plannerRoutes';
 import healthRoutes from './routes/healthRoutes';
-import studyPlanRoutes from './routes/studyPlanRoutes';
+// import studyPlanRoutes from './routes/studyPlanRoutes'; // 暂时注释掉
 import apiRoutes from './routes/api';
 import { seedData } from './utils/seedData';
 import { validateUserId, checkWaterGoal, checkSittingTime, formatHealthResponse } from './middleware/healthMiddleware';
@@ -58,7 +58,7 @@ const startServer = async () => {
   app.use('/api/materials', materialRoutes);
   app.use('/api/planner', plannerRoutes);
   app.use('/api/health', healthRoutes);
-  app.use('/', studyPlanRoutes);
+  // app.use('/', studyPlanRoutes); // 暂时注释掉
   app.use('/api', apiRoutes);
 
   // 根路由
