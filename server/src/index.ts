@@ -13,9 +13,12 @@ import apiRoutes from './routes/api';
 import { seedData } from './utils/seedData';
 import { validateUserId, checkWaterGoal, checkSittingTime, formatHealthResponse } from './middleware/healthMiddleware';
 import { createAdminUser } from './userScripts/createAdmin';
+import dns from 'dns';
 
 // 加载环境变量
 dotenv.config();
+
+dns.setDefaultResultOrder('ipv4first'); // 强制优先使用 IPv4
 
 // 启动函数
 const startServer = async () => {
